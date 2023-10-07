@@ -30,17 +30,20 @@ void parse_line(char *line, char **args)
 void execute_command(char **args)
 {
 	pid_t pid;
+	char *command_path;
 
-	char *command_path = find_command(args[0]);
+	if (isEqual(args[0], "exit") == 0)
+	{
+		exit(0);
+	}
 
+	command_path = find_command(args[0]);
 	if (command_path == NULL)
 	{
 		fprintf(stderr, "%s: command not found\n", args[0]);
 		return;
 	}
-
 	pid = fork();
-
 	if (pid < 0)
 	{
 		perror("Fork Failed");
@@ -60,7 +63,6 @@ void execute_command(char **args)
 	{
 		wait(NULL);
 	}
-
 	free(command_path);
 }
 

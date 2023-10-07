@@ -42,5 +42,6 @@ int _strncmp(const char *str1, const char *str2, size_t n);
 size_t _strlen(const char *str);
 char *_strdup(const char *str);
 void *_memcpy(void *dest, const void *src, size_t n);
+int isEqual(const char *str1, const char *str2);
 
 #endif
