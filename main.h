@@ -12,6 +12,8 @@
 #include <stdbool.h>
 #include <dirent.h>
 #include <libgen.h>
+#include <limits.h>
+#include <sys/stat.h>
 
 #define MAX_PATH_LENGTH 4096
 #define MAX_CHAR_LENGTH 1024
@@ -34,5 +36,11 @@ typedef struct Node
 Node;
 
 extern char **environ;
+char *find_command(char *command);
+char *_getenv(const char *name);
+int _strncmp(const char *str1, const char *str2, size_t n);
+size_t _strlen(const char *str);
+char *_strdup(const char *str);
+void *_memcpy(void *dest, const void *src, size_t n);
 
 #endif

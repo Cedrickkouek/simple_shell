@@ -9,17 +9,17 @@
 
 void parse_line(char *line, char **args)
 {
-	char *token = strtok(line, " \n");
-	int i = 0;
+    char *token = strtok(line, " \n");
+    int i = 0;
 
-	while (token != NULL)
-	{
-		args[i] = token;
-		i++;
-		token = strtok(NULL, " \n");
-	}
+    while (token != NULL)
+    {
+        args[i] = token;
+        i++;
+        token = strtok(NULL, " \n");
+    }
 
-	args[i] = NULL;
+    args[i] = NULL;
 }
 
 /**
@@ -29,25 +29,39 @@ void parse_line(char *line, char **args)
  */
 void execute_command(char **args)
 {
-	pid_t pid = fork();
+    pid_t pid;
 
-	if (pid < 0)
-	{
-		perror("Fork Failed");
-		exit(1);
-	}
-	else if (pid == 0)
-	{
-		if (execve(args[0], args, environ) < 0)
-		{
-			perror(args[0]);
-			exit(1);
-		}
-	}
-	else
-	{
-		wait(NULL);
-	}
+    char *command_path = find_command(args[0]);
+
+    if (command_path == NULL)
+    {
+        fprintf(stderr, "%s: command not found\n", args[0]);
+        return;
+    }
+
+    pid = fork();
+
+    if (pid < 0)
+    {
+        perror("Fork Failed");
+        free(command_path);
+        exit(1);
+    }
+    else if (pid == 0)
+    {
+        if (execve(command_path, args, environ) < 0)
+        {
+            perror(args[0]);
+            free(command_path);
+            exit(1);
+        }
+    }
+    else
+    {
+        wait(NULL);
+    }
+
+    free(command_path);
 }
 
 /**
