@@ -57,7 +57,10 @@ void execute_command(char **args)
 int main(void)
 {
 	char *args[MAX_LINE / 2 + 1];
-	char line[MAX_LINE];
+	char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+
 
 	int interactive = isatty(STDIN_FILENO);
 
@@ -68,10 +71,11 @@ int main(void)
 			fflush(stdout);
 		}
 
-		if (fgets(line, MAX_LINE, stdin) == NULL)
-		{
-			break;
-		}
+		read = getline(&line, &len, stdin);
+        if (read == -1)
+        {
+            break;
+        }
 
 		parse_line(line, args);
 		if (args[0] != NULL)
