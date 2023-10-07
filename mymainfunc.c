@@ -32,6 +32,17 @@ void execute_command(char **args)
 	pid_t pid;
 	char *command_path;
 
+    if (isEqual(args[0], "env") == 0)
+    {
+        char **env = environ;
+        while (*env)
+        {
+            printf("%s\n", *env);
+            env++;
+        }
+        return;
+    }
+
 	if (isEqual(args[0], "exit") == 0)
 	{
 		exit(0);
