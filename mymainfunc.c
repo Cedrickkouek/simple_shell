@@ -86,7 +86,7 @@ int main(void)
 			fflush(stdout);
 		}
 
-		read = getline(&line, &len, stdin);
+		read = _getline(&line, &len, stdin);
 		if (read == -1)
 		{
 			break;

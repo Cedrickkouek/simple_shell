@@ -43,5 +43,6 @@ size_t _strlen(const char *str);
 char *_strdup(const char *str);
 void *_memcpy(void *dest, const void *src, size_t n);
 int isEqual(const char *str1, const char *str2);
+ssize_t _getline(char **lineptr, size_t *n, FILE *stream);
 
 #endif
