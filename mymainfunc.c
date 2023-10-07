@@ -9,17 +9,17 @@
 
 void parse_line(char *line, char **args)
 {
-    char *token = strtok(line, " \n");
-    int i = 0;
+	char *token = strtok(line, " \n");
+	int i = 0;
 
-    while (token != NULL)
-    {
-        args[i] = token;
-        i++;
-        token = strtok(NULL, " \n");
-    }
+	while (token != NULL)
+	{
+		args[i] = token;
+		i++;
+		token = strtok(NULL, " \n");
+	}
 
-    args[i] = NULL;
+	args[i] = NULL;
 }
 
 /**
@@ -29,39 +29,39 @@ void parse_line(char *line, char **args)
  */
 void execute_command(char **args)
 {
-    pid_t pid;
+	pid_t pid;
 
-    char *command_path = find_command(args[0]);
+	char *command_path = find_command(args[0]);
 
-    if (command_path == NULL)
-    {
-        fprintf(stderr, "%s: command not found\n", args[0]);
-        return;
-    }
+	if (command_path == NULL)
+	{
+		fprintf(stderr, "%s: command not found\n", args[0]);
+		return;
+	}
 
-    pid = fork();
+	pid = fork();
 
-    if (pid < 0)
-    {
-        perror("Fork Failed");
-        free(command_path);
-        exit(1);
-    }
-    else if (pid == 0)
-    {
-        if (execve(command_path, args, environ) < 0)
-        {
-            perror(args[0]);
-            free(command_path);
-            exit(1);
-        }
-    }
-    else
-    {
-        wait(NULL);
-    }
+	if (pid < 0)
+	{
+		perror("Fork Failed");
+		free(command_path);
+		exit(1);
+	}
+	else if (pid == 0)
+	{
+		if (execve(command_path, args, environ) < 0)
+		{
+			perror(args[0]);
+			free(command_path);
+			exit(1);
+		}
+	}
+	else
+	{
+		wait(NULL);
+	}
 
-    free(command_path);
+	free(command_path);
 }
 
 /**
@@ -72,9 +72,8 @@ int main(void)
 {
 	char *args[MAX_LINE / 2 + 1];
 	char *line = NULL;
-    size_t len = 0;
-    ssize_t read;
-
+	size_t len = 0;
+	ssize_t read;
 
 	int interactive = isatty(STDIN_FILENO);
 
@@ -86,10 +85,10 @@ int main(void)
 		}
 
 		read = getline(&line, &len, stdin);
-        if (read == -1)
-        {
-            break;
-        }
+		if (read == -1)
+		{
+			break;
+		}
 
 		parse_line(line, args);
 		if (args[0] != NULL)
