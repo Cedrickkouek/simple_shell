@@ -1,5 +1,20 @@
 #include "main.h"
 
+void checkEnv(char *str, char *path)
+{
+    if (isEqual(str, "env") == 0)
+    {
+        char **env = environ;
+        while (*env)
+        {
+            printf("%s\n", *env);
+            env++;
+        }
+        _setenv("PWD", path, 1);
+        return;
+    }
+}
+
 /**
  *parse_line - passes a line to execute function
  *@line: arg1
@@ -31,23 +46,14 @@ void execute_command(char **args)
 {
 	pid_t pid;
 	char *command_path;
+    char *path = _getenv("PATH");
 
-    if (isEqual(args[0], "env") == 0)
-    {
-        char **env = environ;
-        while (*env)
-        {
-            printf("%s\n", *env);
-            env++;
-        }
-        return;
-    }
-
+    checkEnv(args[0], path);
+    
 	if (isEqual(args[0], "exit") == 0)
 	{
 		exit(0);
 	}
-
 	command_path = find_command(args[0]);
 	if (command_path == NULL)
 	{
@@ -75,6 +81,7 @@ void execute_command(char **args)
 		wait(NULL);
 	}
 	free(command_path);
+
 }
 
 /**
