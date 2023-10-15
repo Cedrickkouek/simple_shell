@@ -1,18 +1,25 @@
 #include "main.h"
-
+/**
+ * checkEnv - checks the env variable
+ * @str:arg1
+ * @path:arg2
+ * Return: nothing(void)
+*/
 void checkEnv(char *str, char *path)
 {
-    if (isEqual(str, "env") == 0)
-    {
-        char **env = environ;
-        while (*env)
-        {
-            printf("%s\n", *env);
-            env++;
-        }
-        _setenv("PWD", path, 1);
-        return;
-    }
+	if (isEqual(str, "env") == 0)
+	{
+		char **env = environ;
+
+		while (*env)
+		{
+			printf("%s\n", *env);
+			env++;
+		}
+
+		_setenv("PWD", path, 1);
+		return;
+	}
 }
 
 /**
@@ -46,20 +53,22 @@ void execute_command(char **args)
 {
 	pid_t pid;
 	char *command_path;
-    char *path = _getenv("PATH");
+	char *path = _getenv("PATH");
 
-    checkEnv(args[0], path);
-    
+	checkEnv(args[0], path);
+
 	if (isEqual(args[0], "exit") == 0)
 	{
 		exit(0);
 	}
+
 	command_path = find_command(args[0]);
 	if (command_path == NULL)
 	{
 		fprintf(stderr, "%s: command not found\n", args[0]);
 		return;
 	}
+
 	pid = fork();
 	if (pid < 0)
 	{
@@ -81,7 +90,6 @@ void execute_command(char **args)
 		wait(NULL);
 	}
 	free(command_path);
-
 }
 
 /**
