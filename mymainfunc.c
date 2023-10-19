@@ -1,11 +1,10 @@
 #include "main.h"
-
 /**
- *checkEnv - checks the env variable
- *@str: arg1
- *@path: arg2
- *Return: nothing (void)
- */
+ * checkEnv - checks the env variable
+ * @str:arg1
+ * @path:arg2
+ * Return: nothing(void)
+*/
 void checkEnv(char *str, char *path)
 {
 	if (isEqual(str, "env") == 0)
@@ -29,6 +28,7 @@ void checkEnv(char *str, char *path)
  *@args: arg2
  *Return: nothing
  */
+
 void parse_line(char *line, char **args)
 {
 	char *token = strtok(line, " \n");
@@ -53,6 +53,9 @@ void execute_command(char **args)
 {
 	pid_t pid;
 	char *command_path;
+	char *path = _getenv("PATH");
+
+	checkEnv(args[0], path);
 
 	if (isEqual(args[0], "exit") == 0)
 	{
@@ -86,19 +89,17 @@ void execute_command(char **args)
 	{
 		wait(NULL);
 	}
-
 	free(command_path);
 }
 
 /**
- *main - Is a super simple shell program
+ *main -  Is a super simple shell program
  *Return: An integer 0
  */
 int main(void)
 {
 	char *args[MAX_LINE / 2 + 1];
 	char line[MAX_LINE];
-	char *command;
 
 	int interactive = isatty(STDIN_FILENO);
 
@@ -114,17 +115,10 @@ int main(void)
 			break;
 		}
 
-		command = strtok(line, "\n");
-		while (command != NULL)
+		parse_line(line, args);
+		if (args[0] != NULL)
 		{
-			parse_line(command, args);
-			if (args[0] != NULL)
-			{
-				execute_command(args);
-				checkEnv(args[0], _getenv("PATH"));
-			}
-
-			command = strtok(NULL, "\n");
+			execute_command(args);
 		}
 	} while (interactive);
 

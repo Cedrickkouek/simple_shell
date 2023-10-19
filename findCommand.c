@@ -7,9 +7,10 @@
  */
 char *find_command(char *command)
 {
-	char *PATH;
+	char *PATH = _getenv("PATH");
 	char *p;
 	char *filepath;
+	char *path_copy = _strdup(PATH);
 	struct stat st;
 
 	if (strchr(command, '/') != NULL)
@@ -28,8 +29,7 @@ char *find_command(char *command)
 		return (NULL);
 	}
 
-	PATH = _getenv("PATH");
-	p = strtok(PATH, ":");
+	p = strtok(path_copy, ":");
 	filepath = malloc(MAX_PATH_LENGTH + 1);
 
 	while (p != NULL)
@@ -45,6 +45,7 @@ char *find_command(char *command)
 		filepath[MAX_PATH_LENGTH] = '\0';
 	}
 
+	free(path_copy);
 	free(filepath);
 	return (NULL);
 }
