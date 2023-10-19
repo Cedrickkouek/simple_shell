@@ -40,11 +40,9 @@ char *find_command(char *command)
 		{
 			return (filepath);
 		}
-
 		p = strtok(NULL, ":");
 		filepath[MAX_PATH_LENGTH] = '\0';
 	}
-
 	free(path_copy);
 	free(filepath);
 	return (NULL);
