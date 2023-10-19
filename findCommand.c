@@ -45,6 +45,8 @@ char *find_command(char *command)
 		filepath[MAX_PATH_LENGTH] = '\0';
 	}
 
+	free(PATH);
+	free(p);
 	free(filepath);
 	return (NULL);
 }
