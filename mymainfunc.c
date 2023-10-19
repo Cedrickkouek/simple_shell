@@ -51,45 +51,54 @@ void parse_line(char *line, char **args)
  */
 void execute_command(char **args)
 {
-	pid_t pid;
-	char *command_path;
-	char *path = _getenv("PATH");
+    pid_t pid;
+    char *command_path;
 
-	checkEnv(args[0], path);
+    if (isEqual(args[0], "exit") == 0)
+    {
+        exit(0);
+    }
 
-	if (isEqual(args[0], "exit") == 0)
-	{
-		exit(0);
-	}
+    command_path = find_command(args[0]);
+    if (command_path == NULL)
+    {
+        fprintf(stderr, "%s: command not found\n", args[0]);
+        return;
+    }
 
-	command_path = find_command(args[0]);
-	if (command_path == NULL)
-	{
-		fprintf(stderr, "%s: command not found\n", args[0]);
-		return;
-	}
+    pid = fork();
+    if (pid < 0)
+    {
+        perror("Fork Failed");
+        free(command_path);
+        exit(1);
+    }
+    else if (pid == 0)
+    {
+        if (execve(command_path, args, environ) < 0)
+        {
+            perror(args[0]);
+            free(command_path);
+            exit(1);
+        }
+    }
+    else
+    {
+        wait(NULL);
+        free(command_path);
+    }
+}
 
-	pid = fork();
-	if (pid < 0)
-	{
-		perror("Fork Failed");
-		free(command_path);
-		exit(1);
-	}
-	else if (pid == 0)
-	{
-		if (execve(command_path, args, environ) < 0)
-		{
-			perror(args[0]);
-			free(command_path);
-			exit(1);
-		}
-	}
-	else
-	{
-		wait(NULL);
-	}
-	free(command_path);
+/**
+ * readInput - reads a user's input
+ * Return: a character
+*/
+char *readInput(void)
+{
+    char *line = NULL;
+    size_t bufsize = 0; 
+    getline(&line, &bufsize, stdin);
+    return line;
 }
 
 /**
@@ -98,29 +107,17 @@ void execute_command(char **args)
  */
 int main(void)
 {
-	char *args[MAX_LINE / 2 + 1];
-	char line[MAX_LINE];
+    char *line;
+    char *args[1024];
 
-	int interactive = isatty(STDIN_FILENO);
+    while (1)
+    {
+        printf("$ ");
+        line = readInput();
+        parse_line(line, args);
+        execute_command(args);
+        free(line);
+    }
 
-	do {
-		if (interactive)
-		{
-			printf("$ ");
-			fflush(stdout);
-		}
-
-		if (fgets(line, MAX_LINE, stdin) == NULL)
-		{
-			break;
-		}
-
-		parse_line(line, args);
-		if (args[0] != NULL)
-		{
-			execute_command(args);
-		}
-	} while (interactive);
-
-	return (0);
+    return EXIT_SUCCESS;
 }
