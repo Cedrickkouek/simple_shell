@@ -86,6 +86,7 @@ void execute_command(char **args)
 	{
 		wait(NULL);
 	}
+
 	free(command_path);
 }
 
@@ -125,7 +126,6 @@ int main(void)
 
 			command = strtok(NULL, "\n");
 		}
-		free(args);
 	} while (interactive);
 
 	return (0);
