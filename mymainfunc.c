@@ -115,18 +115,12 @@ int main(void)
 			break;
 		}
 
-		char *command = strtok(line, "\n");
-		while (command != NULL)
+		parse_line(line, args);
+		if (args[0] != NULL)
 		{
-			parse_line(command, args);
-			if (args[0] != NULL)
-			{
-				execute_command(args);
-			}
-			command = strtok(NULL, "\n");
+			execute_command(args);
 		}
 	} while (interactive);
-
 
 	return (0);
 }
