@@ -14,8 +14,10 @@ char *find_command(char *command)
 
 	if (strchr(command, '/') != NULL)
 	{
+		struct stat st;
+
 		if (stat(command, &st) == 0 && S_ISREG(st.st_mode)
-			&& (st.st_mode & S_IXUSR))
+				&& (st.st_mode & S_IXUSR))
 		{
 			char *filepath = malloc(strlen(command) + 1);
 
@@ -33,13 +35,14 @@ char *find_command(char *command)
 	while (p != NULL)
 	{
 		snprintf(filepath, MAX_PATH_LENGTH + 1, "%s/%s", p, command);
-		if (stat(command, &st) == 0 && S_ISREG(st.st_mode)
-			&& (st.st_mode & S_IXUSR))
+		if (stat(filepath, &st) == 0 && S_ISREG(st.st_mode)
+				&& (st.st_mode & S_IXUSR))
 		{
 			return (filepath);
 		}
 
 		p = strtok(NULL, ":");
+		filepath[MAX_PATH_LENGTH] = '\0';
 	}
 
 	free(filepath);
