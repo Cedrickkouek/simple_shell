@@ -7,10 +7,7 @@
  */
 char *find_command(char *command)
 {
-	char *PATH;
-	char *p;
-	char *filepath;
-	char *path_copy;
+	char *PATH, *p, *filepath, *path_copy;
 	struct stat st;
 
 	if (strchr(command, '/') != NULL)
@@ -47,7 +44,6 @@ char *find_command(char *command)
 		p = strtok(NULL, ":");
 		filepath[MAX_PATH_LENGTH] = '\0';
 	}
-
 	free(path_copy);
 	free(filepath);
 	return (NULL);
