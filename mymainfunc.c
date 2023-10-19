@@ -99,9 +99,7 @@ void execute_command(char **args)
 int main(void)
 {
 	char *args[MAX_LINE / 2 + 1];
-	char *line = NULL;
-	size_t len = 0;
-	ssize_t read;
+	char line[MAX_LINE];
 
 	int interactive = isatty(STDIN_FILENO);
 
@@ -112,8 +110,7 @@ int main(void)
 			fflush(stdout);
 		}
 
-		read = _getline(&line, &len, stdin);
-		if (read == -1)
+		if (fgets(line, MAX_LINE, stdin) == NULL)
 		{
 			break;
 		}
