@@ -17,7 +17,7 @@ char *find_command(char *command)
 	if (strchr(command, '/') != NULL)
 	{
 		if (stat(command, &st) == 0 && S_ISREG(st.st_mode) &&
-			(st.st_mode &S_IXUSR))
+			(st.st_mode & S_IXUSR))
 		{
 			char *filepath = malloc(strlen(command) + 1);
 
@@ -35,7 +35,7 @@ char *find_command(char *command)
 	{
 		snprintf(filepath, MAX_PATH_LENGTH + 1, "%s/%s", p, command);
 		if (stat(filepath, &st) == 0 && S_ISREG(st.st_mode) &&
-			(st.st_mode &S_IXUSR))
+			(st.st_mode & S_IXUSR))
 		{
 			return (filepath);
 		}
