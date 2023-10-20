@@ -1,11 +1,10 @@
 #include "main.h"
-
 /**
- *checkEnv - checks the env variable
- *@str:arg1
- *@path:arg2
- *Return: nothing(void)
- */
+ * checkEnv - checks the env variable
+ * @str:arg1
+ * @path:arg2
+ * Return: nothing(void)
+*/
 void checkEnv(char *str, char *path)
 {
 	if (isEqual(str, "env") == 0)
@@ -54,6 +53,9 @@ void execute_command(char **args)
 {
 	pid_t pid;
 	char *command_path;
+	char *path = _getenv("PATH");
+
+	checkEnv(args[0], path);
 
 	if (isEqual(args[0], "exit") == 0)
 	{
@@ -86,21 +88,8 @@ void execute_command(char **args)
 	else
 	{
 		wait(NULL);
-		free(command_path);
 	}
-}
-
-/**
- *readInput - reads a user's input
- *Return: a character
- */
-char *readInput(void)
-{
-	char *line = NULL;
-	size_t bufsize = 0;
-
-	getline(&line, &bufsize, stdin);
-	return (line);
+	free(command_path);
 }
 
 /**
@@ -109,17 +98,29 @@ char *readInput(void)
  */
 int main(void)
 {
-	char *line;
-	char *args[1024];
+	char *args[MAX_LINE / 2 + 1];
+	char line[MAX_LINE];
 
-	while (1)
-	{
-		printf("$ ");
-		line = readInput();
+	int interactive = isatty(STDIN_FILENO);
+
+	do {
+		if (interactive)
+		{
+			printf("$ ");
+			fflush(stdout);
+		}
+
+		if (fgets(line, MAX_LINE, stdin) == NULL)
+		{
+			break;
+		}
+
 		parse_line(line, args);
-		execute_command(args);
-		free(line);
-	}
+		if (args[0] != NULL)
+		{
+			execute_command(args);
+		}
+	} while (interactive);
 
-	return (EXIT_SUCCESS);
+	return (0);
 }
