@@ -44,6 +44,30 @@ void parse_line(char *line, char **args)
 	args[i] = NULL;
 }
 
+void cmd_command(char **args)
+{
+	if (isEqual(args[0], "cd") == 0)
+	{
+		if (args[1] == NULL || isEqual(args[1], "~") == 0)
+		{
+			chdir(_getenv("HOME"));
+		}
+		else if (isEqual(args[1], "-") == 0)
+		{
+			chdir(_getenv("OLDPWD"));
+		}
+		else
+		{
+			if (chdir(args[1]) != 0)
+			{
+				perror("chdir");
+			}
+		}
+		_setenv("PWD", getcwd(NULL, 0), 1);
+		return;
+	}
+}
+
 /**
  *execute_command - executes a command
  *@args: arg1
@@ -59,12 +83,15 @@ void execute_command(char **args)
 		exit(0);
 	}
 
+	cmd_command(args);
+
 	if (args[0] == NULL)
 	{
 		return;
 	}
 
 	cmd = find_command(args[0]);
+
 	if (cmd == NULL)
 	{
 		fprintf(stderr, "%s: command not found\n", args[0]);
