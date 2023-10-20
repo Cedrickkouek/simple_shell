@@ -82,22 +82,17 @@ void execute_command(char **args)
 	{
 		exit(0);
 	}
-
 	cmd_command(args);
-
 	if (args[0] == NULL)
 	{
 		return;
 	}
-
 	cmd = find_command(args[0]);
-
 	if (cmd == NULL)
 	{
 		fprintf(stderr, "%s: command not found\n", args[0]);
 		return;
 	}
-
 	pid = fork();
 	if (pid < 0)
 	{
@@ -114,7 +109,6 @@ void execute_command(char **args)
 	{
 		wait(NULL);
 	}
-
 	free(cmd);
 }
 
