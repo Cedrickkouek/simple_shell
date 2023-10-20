@@ -54,6 +54,11 @@ void execute_command(char **args)
 	pid_t pid;
 	char *cmd;
 
+	if (isEqual(args[0], "exit") == 0)
+	{
+		exit(0);
+	}
+
 	if (args[0] == NULL)
 	{
 		return;
