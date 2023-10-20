@@ -83,11 +83,6 @@ void execute_command(char **args)
 		exit(0);
 	}
 
-	if(isEqual(args[0], "env"))
-	{
-		char *en = _getenv("PATH");
-		printf("%s\n", en);
-	}
 	cmd_command(args);
 	if (args[0] == NULL)
 	{
