@@ -1,11 +1,10 @@
 #include "main.h"
-
 /**
- *checkEnv - checks the env variable
- *@str:arg1
- *@path:arg2
- *Return: nothing(void)
- */
+ * checkEnv - checks the env variable
+ * @str:arg1
+ * @path:arg2
+ * Return: nothing(void)
+*/
 void checkEnv(char *str, char *path)
 {
 	if (isEqual(str, "env") == 0)
@@ -54,8 +53,12 @@ void execute_command(char **args)
 {
 	pid_t pid;
 	char *command_path;
+	int status;
+	char *path = _getenv("PATH");
 
-	if (strcmp(args[0], "exit") == 0)
+	checkEnv(args[0], path);
+
+	if (isEqual(args[0], "exit") == 0)
 	{
 		exit(0);
 	}
@@ -76,7 +79,7 @@ void execute_command(char **args)
 	}
 	else if (pid == 0)
 	{
-		if (execve(command_path, args, NULL) < 0)
+		if (execve(command_path, args, environ) < 0)
 		{
 			perror(args[0]);
 			free(command_path);
@@ -85,9 +88,8 @@ void execute_command(char **args)
 	}
 	else
 	{
-		wait(NULL);
+		waitpid(pid, &status, 0);
 	}
-
 	free(command_path);
 }
 
