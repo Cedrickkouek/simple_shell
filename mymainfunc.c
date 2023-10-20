@@ -52,19 +52,15 @@ void parse_line(char *line, char **args)
 void execute_command(char **args)
 {
 	pid_t pid;
-	char *command_path;
-	int status;
-	char *path = _getenv("PATH");
+	char *cmd;
 
-	checkEnv(args[0], path);
-
-	if (isEqual(args[0], "exit") == 0)
+	if (args[0] == NULL)
 	{
-		exit(0);
+		return;
 	}
 
-	command_path = find_command(args[0]);
-	if (command_path == NULL)
+	cmd = find_command(args[0]);
+	if (cmd == NULL)
 	{
 		fprintf(stderr, "%s: command not found\n", args[0]);
 		return;
@@ -74,29 +70,27 @@ void execute_command(char **args)
 	if (pid < 0)
 	{
 		perror("Fork Failed");
-		free(command_path);
 		exit(1);
 	}
 	else if (pid == 0)
 	{
-		if (execve(command_path, args, environ) < 0)
-		{
-			perror(args[0]);
-			free(command_path);
-			exit(1);
-		}
+		execve(cmd, args, environ);
+		perror(cmd);
+		exit(1);
 	}
 	else
 	{
-		waitpid(pid, &status, 0);
+		wait(NULL);
 	}
-	free(command_path);
+
+	free(cmd);
 }
 
 /**
  *main -  Is a super simple shell program
  *Return: An integer 0
  */
+
 int main(void)
 {
 	char *args[MAX_LINE / 2 + 1];
@@ -111,15 +105,19 @@ int main(void)
 			fflush(stdout);
 		}
 
-		if (fgets(line, MAX_LINE, stdin) == NULL)
+		while (fgets(line, MAX_LINE, stdin) != NULL)
 		{
-			break;
-		}
+			parse_line(line, args);
+			if (args[0] != NULL)
+			{
+				execute_command(args);
+			}
 
-		parse_line(line, args);
-		if (args[0] != NULL)
-		{
-			execute_command(args);
+			if (interactive)
+			{
+				printf("$ ");
+				fflush(stdout);
+			}
 		}
 	} while (interactive);
 
